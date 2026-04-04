@@ -8,7 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-
+import java.util.ArrayList;
+import java.util.List;
 @Entity
 @Table(name = "live_streams")
 @Getter @Setter
@@ -48,10 +49,29 @@ public class LiveStream {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Optimistic Locking for concurrent viewer/like updates
+
     @Version
     private Long version;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_user_id", nullable = false)
+    private User host;
+
+    @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<StreamViewer> viewers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<GiftTransaction> giftTransactions = new ArrayList<>();
 
 
     public enum StreamStatus {
