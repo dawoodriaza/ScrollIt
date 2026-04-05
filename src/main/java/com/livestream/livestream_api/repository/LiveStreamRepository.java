@@ -16,7 +16,11 @@ import java.util.List;
 public interface LiveStreamRepository extends JpaRepository<LiveStream, Long> {
 
     List<LiveStream> findByStatus(LiveStream.StreamStatus status);
+
+    Page<LiveStream> findByStatus(LiveStream.StreamStatus status, Pageable pageable);
+
     List<LiveStream> findByHost_UserId(Long hostId);
 
-
+    @Query("SELECT ls FROM LiveStream ls WHERE ls.title LIKE %:keyword%")
+    Page<LiveStream> searchByTitle(@Param("keyword") String keyword, Pageable pageable);
 }
