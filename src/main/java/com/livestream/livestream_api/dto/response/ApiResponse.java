@@ -7,6 +7,12 @@ import java.time.LocalDateTime;
 
 public class ApiResponse {
 
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class AuthToken {
+        private String accessToken;
+        private String tokenType;
+        private UserSummary user;
+    }
 
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
