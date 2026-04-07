@@ -51,6 +51,7 @@ public class AuthService {
                 .coinBalance(100).build();
 
         userRepository.save(user);
+        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
 
         return new ApiResponse.MessageResponse("Registration successful! Please check your email to verify your account.");
     }
