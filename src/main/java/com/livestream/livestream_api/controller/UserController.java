@@ -28,6 +28,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyProfile(userDetails.getUsername()));
     }
 
+
+
     @PutMapping("/me")
     public ResponseEntity<ApiResponse.UserSummary> updateMyProfile(
             @AuthenticationPrincipal UserDetails userDetails,

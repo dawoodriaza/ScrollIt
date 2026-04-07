@@ -81,4 +81,32 @@ public class AuthService {
                 .user(ApiResponse.UserSummary.from(user)).build();
     }
 
+
+
+    @Transactional
+    public ApiResponse.MessageResponse verifyEmail(String token) {
+        User user = userRepository.findByEmailVerificationToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid or expired verification token."));
+        if (user.getEmailVerificationTokenExpiry().isBefore(LocalDateTime.now()))
+            throw new BadRequestException("Verification token has expired.");
+        user.setEmailVerified(true);
+        user.setEmailVerificationToken(null);
+        user.setEmailVerificationTokenExpiry(null);
+        userRepository.save(user);
+        return new ApiResponse.MessageResponse("Email verified successfully! You can now log in.");
+    }
+
+    @Transactional
+    public ApiResponse.MessageResponse forgotPassword(AuthRequest.ForgotPassword req) {
+        userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            user.setPasswordResetToken(token);
+            user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
+            userRepository.save(user);
+            emailService.sendPasswordResetEmail(user.getEmail(), token);
+
+        });
+        return new ApiResponse.MessageResponse("If your email is registered, a password reset link has been sent.");
+    }
+
 }
