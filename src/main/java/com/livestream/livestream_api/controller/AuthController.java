@@ -4,11 +4,15 @@ package com.livestream.livestream_api.controller;
 
 import com.livestream.livestream_api.dto.request.AuthRequest;
 import com.livestream.livestream_api.dto.response.ApiResponse;
+import com.livestream.livestream_api.exception.BadRequestException;
+import com.livestream.livestream_api.repository.UserRepository;
 import com.livestream.livestream_api.service.AuthService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +32,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse.AuthToken> login(@Valid @RequestBody AuthRequest.Login req) {
         return ResponseEntity.ok(authService.login(req));
     }
+
+
+
 
 }
