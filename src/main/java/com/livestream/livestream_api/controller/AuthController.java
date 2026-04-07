@@ -33,7 +33,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(req));
     }
 
-
+    @GetMapping("/verify-email")
+    public ResponseEntity<ApiResponse.MessageResponse> verifyEmail(@RequestParam String token) {
+        return ResponseEntity.ok(authService.verifyEmail(token));
+    }
 
 
 }

@@ -40,7 +40,24 @@ public class ApiResponse {
                     .build();
         }
     }
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class GiftSummary {
+        private Long giftId;
+        private String giftName;
+        private int coinValue;
+        private String iconUrl;
+        private boolean active;
 
+        public static GiftSummary from(Gift g) {
+            return GiftSummary.builder()
+                    .giftId(g.getGiftId())
+                    .giftName(g.getGiftName())
+                    .coinValue(g.getCoinValue())
+                    .iconUrl(g.getIconUrl())
+                    .active(g.isActive())
+                    .build();
+        }
+    }
 
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
