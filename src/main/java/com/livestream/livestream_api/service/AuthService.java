@@ -30,7 +30,7 @@ public class AuthService {
     private final JwtUtil               jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService    userDetailsService;
-
+    private final EmailService          emailService;
 
 
     @Transactional
