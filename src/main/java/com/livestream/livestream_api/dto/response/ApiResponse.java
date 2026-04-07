@@ -14,7 +14,6 @@ public class ApiResponse {
         private UserSummary user;
     }
 
-
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class UserSummary {
         private Long userId;
@@ -43,4 +42,9 @@ public class ApiResponse {
     }
 
 
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class MessageResponse {
+        private String message;
+    }
 }
