@@ -40,6 +40,61 @@ public class ApiResponse {
                     .build();
         }
     }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class StreamSummary {
+        private Long streamId;
+        private String title;
+        private String description;
+        private int viewerCount;
+        private int likeCount;
+        private String status;
+        private String thumbnailUrl;
+        private Long hostId;
+        private String hostUsername;
+        private LocalDateTime startedAt;
+        private LocalDateTime endedAt;
+
+        public static StreamSummary from(LiveStream s) {
+            return StreamSummary.builder()
+                    .streamId(s.getStreamId())
+                    .title(s.getTitle())
+                    .description(s.getDescription())
+                    .viewerCount(s.getViewerCount())
+                    .likeCount(s.getLikeCount())
+                    .status(s.getStatus().name())
+                    .thumbnailUrl(s.getThumbnailUrl())
+                    .hostId(s.getHost().getUserId())
+                    .hostUsername(s.getHost().getUsername())
+                    .startedAt(s.getStartedAt())
+                    .endedAt(s.getEndedAt())
+                    .build();
+        }
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class CommentSummary {
+        private Long commentId;
+        private String message;
+        private Long userId;
+        private String username;
+        private Long streamId;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public static CommentSummary from(Comment c) {
+            return CommentSummary.builder()
+                    .commentId(c.getCommentId())
+                    .message(c.getMessage())
+                    .userId(c.getUser().getUserId())
+                    .username(c.getUser().getUsername())
+                    .streamId(c.getStream().getStreamId())
+                    .createdAt(c.getCreatedAt())
+                    .updatedAt(c.getUpdatedAt())
+                    .build();
+        }
+    }
+
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class GiftSummary {
         private Long giftId;
@@ -59,6 +114,53 @@ public class ApiResponse {
         }
     }
 
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class TransactionSummary {
+        private Long transactionId;
+        private Long senderId;
+        private String senderUsername;
+        private Long streamId;
+        private Long giftId;
+        private String giftName;
+        private int coinsSpent;
+        private LocalDateTime createdAt;
+
+        public static TransactionSummary from(GiftTransaction t) {
+            return TransactionSummary.builder()
+                    .transactionId(t.getTransactionId())
+                    .senderId(t.getSender().getUserId())
+                    .senderUsername(t.getSender().getUsername())
+                    .streamId(t.getStream().getStreamId())
+                    .giftId(t.getGift().getGiftId())
+                    .giftName(t.getGift().getGiftName())
+                    .coinsSpent(t.getCoinsSpent())
+                    .createdAt(t.getCreatedAt())
+                    .build();
+        }
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class ViewerSummary {
+        private Long viewerId;
+        private Long userId;
+        private String username;
+        private Long streamId;
+        private LocalDateTime joinTime;
+        private LocalDateTime leaveTime;
+        private String status;
+
+        public static ViewerSummary from(StreamViewer sv) {
+            return ViewerSummary.builder()
+                    .viewerId(sv.getViewerId())
+                    .userId(sv.getUser().getUserId())
+                    .username(sv.getUser().getUsername())
+                    .streamId(sv.getStream().getStreamId())
+                    .joinTime(sv.getJoinTime())
+                    .leaveTime(sv.getLeaveTime())
+                    .status(sv.getStatus().name())
+                    .build();
+        }
+    }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class MessageResponse {
