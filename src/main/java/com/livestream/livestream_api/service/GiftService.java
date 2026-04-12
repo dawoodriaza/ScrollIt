@@ -1,7 +1,5 @@
 package com.livestream.livestream_api.service;
 
-
-
 import com.livestream.livestream_api.dto.request.GiftRequest;
 import com.livestream.livestream_api.dto.response.ApiResponse;
 import com.livestream.livestream_api.exception.*;
@@ -40,11 +38,25 @@ public class GiftService {
     }
 
     @Transactional
+    public ApiResponse.GiftSummary updateGift(Long id, GiftRequest.Update req) {
+        Gift gift = findGift(id);
+        if (req.getGiftName() != null && !req.getGiftName().equals(gift.getGiftName())) {
+            if (giftRepository.existsByGiftName(req.getGiftName()))
+                throw new DuplicateResourceException("Gift name already exists.");
+            gift.setGiftName(req.getGiftName());
+        }
+        if (req.getCoinValue() > 0) gift.setCoinValue(req.getCoinValue());
+        if (req.getIconUrl() != null) gift.setIconUrl(req.getIconUrl());
+        if (req.getActive() != null) gift.setActive(req.getActive());
+        return ApiResponse.GiftSummary.from(giftRepository.save(gift));
+    }
+
+    @Transactional
     public ApiResponse.MessageResponse deleteGift(Long id) {
         Gift gift = findGift(id);
         gift.setActive(false);
         giftRepository.save(gift);
-        return new ApiResponse.MessageResponse("Gift disabed successfully.");
+        return new ApiResponse.MessageResponse("Gift deactivated successfully.");
     }
 
     private Gift findGift(Long id) {
