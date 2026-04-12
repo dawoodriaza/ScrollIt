@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository     userRepository;
+    private final FileStorageService fileStorageService;
 
 
     public Page<ApiResponse.UserSummary> getAllUsers(Pageable pageable) {
@@ -42,6 +43,45 @@ public class UserService {
             user.setUsername(req.getUsername());
         }
         return ApiResponse.UserSummary.from(userRepository.save(user));
+    }
+
+    @Transactional
+    public ApiResponse.UserSummary updateProfilePicture(String email, MultipartFile file) {
+        User user = findUserByEmail(email);
+        if (user.getProfilePicture() != null)
+            fileStorageService.deleteFile(user.getProfilePicture());
+        user.setProfilePicture(fileStorageService.storeFile(file));
+        return ApiResponse.UserSummary.from(userRepository.save(user));
+    }
+
+    @Transactional
+    public ApiResponse.MessageResponse softDeleteUser(Long id, UserDetails adminDetails) {
+        User admin  = findUserByEmail(adminDetails.getUsername());
+        User target = findUser(id);
+        if (target.getRole() != User.Role.ADMIN)
+            throw new BadRequestException("Soft delete only applies to admin users.");
+        target.setUserStatus(User.UserStatus.INACTIVE);
+        userRepository.save(target);
+
+        return new ApiResponse.MessageResponse("Admin user '" + target.getUsername() + "' deactivated.");
+    }
+
+    @Transactional
+    public ApiResponse.MessageResponse deleteUser(Long id, UserDetails adminDetails) {
+        User admin  = findUserByEmail(adminDetails.getUsername());
+        User target = findUser(id);
+        userRepository.delete(target);
+
+        return new ApiResponse.MessageResponse("User deleted successfully.");
+    }
+
+    @Transactional
+    public ApiResponse.UserSummary addCoins(Long userId, int coins, UserDetails adminDetails) {
+        User user = findUser(userId);
+        user.setCoinBalance(user.getCoinBalance() + coins);
+        userRepository.save(user);
+
+        return ApiResponse.UserSummary.from(user);
     }
 
     private User findUser(Long id) {
