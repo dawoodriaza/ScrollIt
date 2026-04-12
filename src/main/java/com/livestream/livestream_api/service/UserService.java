@@ -6,14 +6,14 @@ import com.livestream.livestream_api.exception.*;
 import com.livestream.livestream_api.model.User;
 import com.livestream.livestream_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {

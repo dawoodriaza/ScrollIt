@@ -109,4 +109,30 @@ public class AuthService {
         return new ApiResponse.MessageResponse("If your email is registered, a password reset link has been sent.");
     }
 
+    @Transactional
+    public ApiResponse.MessageResponse resetPassword(AuthRequest.ResetPassword req) {
+        User user = userRepository.findByPasswordResetToken(req.getToken())
+                .orElseThrow(() -> new BadRequestException("Invalid or expired reset token."));
+        if (user.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now()))
+            throw new BadRequestException("Reset token has expired.");
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiry(null);
+        userRepository.save(user);
+
+        return new ApiResponse.MessageResponse("Password reset successfully. You can now log in.");
+    }
+
+    @Transactional
+    public ApiResponse.MessageResponse changePassword(String email, AuthRequest.ChangePassword req) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword()))
+            throw new BadRequestException("Current password is incorrect.");
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        userRepository.save(user);
+
+        return new ApiResponse.MessageResponse("Password changed successfully.");
+    }
+
 }
