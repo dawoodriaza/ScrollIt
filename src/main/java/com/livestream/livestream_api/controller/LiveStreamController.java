@@ -82,14 +82,31 @@ public class LiveStreamController {
 
     @PostMapping("/{id}/join")
     public ResponseEntity<ApiResponse.ViewerSummary> joinStream(
-            @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
         return ResponseEntity.ok(streamService.joinStream(userDetails.getUsername(), id));
+    }
+
+
+    @PostMapping("/{id}/join/guest")
+    public ResponseEntity<ApiResponse.ViewerSummary> joinStreamAsGuest(
+            @PathVariable Long id,
+            @RequestParam(required = false) String guestName) {
+        return ResponseEntity.ok(streamService.joinStreamAsGuest(id, guestName));
     }
 
     @PostMapping("/{id}/leave")
     public ResponseEntity<ApiResponse.MessageResponse> leaveStream(
-            @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
         return ResponseEntity.ok(streamService.leaveStream(userDetails.getUsername(), id));
+    }
+
+    @PostMapping("/{id}/leave/guest")
+    public ResponseEntity<ApiResponse.MessageResponse> leaveStreamAsGuest(
+            @PathVariable Long id,
+            @RequestParam Long viewerId) {
+        return ResponseEntity.ok(streamService.leaveStreamAsGuest(id, viewerId));
     }
 
     @GetMapping("/{id}/viewers")

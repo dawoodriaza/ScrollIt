@@ -17,9 +17,13 @@ public class StreamViewer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long viewerId;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
+
+
+    private String guestName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stream_id", nullable = false)
@@ -34,7 +38,12 @@ public class StreamViewer {
     @Builder.Default
     private ViewerStatus status = ViewerStatus.WATCHING;
 
-    public enum ViewerStatus {
-        WATCHING, LEFT
+
+    public String getDisplayName() {
+        if (user != null) return user.getUsername();
+        if (guestName != null) return guestName;
+        return "Guest";
     }
+
+    public enum ViewerStatus { WATCHING, LEFT }
 }

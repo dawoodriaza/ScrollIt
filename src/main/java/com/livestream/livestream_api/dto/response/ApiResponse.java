@@ -144,6 +144,8 @@ public class ApiResponse {
         private Long viewerId;
         private Long userId;
         private String username;
+        private String guestName;
+        private String displayName;
         private Long streamId;
         private LocalDateTime joinTime;
         private LocalDateTime leaveTime;
@@ -152,8 +154,10 @@ public class ApiResponse {
         public static ViewerSummary from(StreamViewer sv) {
             return ViewerSummary.builder()
                     .viewerId(sv.getViewerId())
-                    .userId(sv.getUser().getUserId())
-                    .username(sv.getUser().getUsername())
+                    .userId(sv.getUser() != null ? sv.getUser().getUserId() : null)
+                    .username(sv.getUser() != null ? sv.getUser().getUsername() : null)
+                    .guestName(sv.getGuestName())
+                    .displayName(sv.getDisplayName())
                     .streamId(sv.getStream().getStreamId())
                     .joinTime(sv.getJoinTime())
                     .leaveTime(sv.getLeaveTime())

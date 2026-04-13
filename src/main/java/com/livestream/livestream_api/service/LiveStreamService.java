@@ -7,7 +7,7 @@ import com.livestream.livestream_api.exception.*;
 import com.livestream.livestream_api.model.*;
 import com.livestream.livestream_api.repository.*;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LiveStreamService {
@@ -26,7 +26,7 @@ public class LiveStreamService {
     private final LiveStreamRepository     streamRepository;
     private final UserRepository           userRepository;
     private final StreamViewerRepository   viewerRepository;
-
+    private final FileStorageService       fileStorageService;
     private final StreamConcurrencyManager concurrency;
 
 
@@ -58,7 +58,8 @@ public class LiveStreamService {
         User host = findUserByEmail(email);
         LiveStream stream = LiveStream.builder().title(req.getTitle()).description(req.getDescription())
                 .host(host).status(LiveStream.StreamStatus.SCHEDULED).build();
-
+        if (thumbnail != null && !thumbnail.isEmpty())
+            stream.setThumbnailUrl(fileStorageService.storeFile(thumbnail));
         LiveStream saved = streamRepository.save(stream);
         concurrency.resetViewerCount(saved.getStreamId());
         concurrency.initLikeCount(saved.getStreamId(), 0);
@@ -126,11 +127,13 @@ public class LiveStreamService {
     public ApiResponse.MessageResponse deleteStream(String email, Long streamId) {
         LiveStream stream = findStream(streamId);
         assertHost(stream, email);
+        if (stream.getThumbnailUrl() != null) fileStorageService.deleteFile(stream.getThumbnailUrl());
 
         streamRepository.delete(stream);
         concurrency.cleanupStream(streamId);
         return new ApiResponse.MessageResponse("Stream deleted successfully.");
     }
+
 
     @Transactional
     public ApiResponse.ViewerSummary joinStream(String email, Long streamId) {
@@ -149,6 +152,42 @@ public class LiveStreamService {
         return ApiResponse.ViewerSummary.from(viewer);
     }
 
+
+    @Transactional
+    public ApiResponse.ViewerSummary joinStreamAsGuest(Long streamId, String guestName) {
+        LiveStream stream = findStream(streamId);
+        if (stream.getStatus() != LiveStream.StreamStatus.LIVE)
+            throw new BadRequestException("Stream is not currently live.");
+
+        String name = (guestName != null && !guestName.isBlank()) ? guestName : "Guest";
+
+        StreamViewer viewer = StreamViewer.builder()
+                .user(null)          // no user — guest
+                .guestName(name)
+                .stream(stream)
+                .status(StreamViewer.ViewerStatus.WATCHING)
+                .build();
+        viewerRepository.save(viewer);
+
+        int count = concurrency.incrementViewerCount(streamId);
+        log.info("[VIEWER] Guest '{}' joined stream [{}] | Live viewers: {}", name, streamId, count);
+        return ApiResponse.ViewerSummary.from(viewer);
+    }
+
+
+    @Transactional
+    public ApiResponse.MessageResponse leaveStreamAsGuest(Long streamId, Long viewerId) {
+        StreamViewer viewer = viewerRepository.findById(viewerId)
+                .orElseThrow(() -> new BadRequestException("Viewer not found."));
+        viewer.setStatus(StreamViewer.ViewerStatus.LEFT);
+        viewer.setLeaveTime(LocalDateTime.now());
+        viewerRepository.save(viewer);
+        int count = concurrency.decrementViewerCount(streamId);
+        log.info("[VIEWER] Guest left stream [{}] | Live viewers: {}", streamId, count);
+        return new ApiResponse.MessageResponse("You have left the stream.");
+    }
+
+    // ── Registered user leave ────────────────────────────────────────────────
     @Transactional
     public ApiResponse.MessageResponse leaveStream(String email, Long streamId) {
         User user = findUserByEmail(email);
