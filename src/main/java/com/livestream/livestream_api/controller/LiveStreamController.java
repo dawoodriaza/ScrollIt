@@ -62,13 +62,13 @@ public class LiveStreamController {
         return ResponseEntity.ok(streamService.updateStream(userDetails.getUsername(), id, req));
     }
 
-    @PatchMapping("/{id}/start")
+    @PutMapping("/{id}/start")
     public ResponseEntity<ApiResponse.StreamSummary> startStream(
             @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
         return ResponseEntity.ok(streamService.startStream(userDetails.getUsername(), id));
     }
 
-    @PatchMapping("/{id}/end")
+    @PutMapping("/{id}/end")
     public ResponseEntity<ApiResponse.StreamSummary> endStream(
             @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
         return ResponseEntity.ok(streamService.endStream(userDetails.getUsername(), id));
@@ -95,12 +95,14 @@ public class LiveStreamController {
         return ResponseEntity.ok(streamService.joinStreamAsGuest(id, guestName));
     }
 
+
     @PostMapping("/{id}/leave")
     public ResponseEntity<ApiResponse.MessageResponse> leaveStream(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
         return ResponseEntity.ok(streamService.leaveStream(userDetails.getUsername(), id));
     }
+
 
     @PostMapping("/{id}/leave/guest")
     public ResponseEntity<ApiResponse.MessageResponse> leaveStreamAsGuest(
