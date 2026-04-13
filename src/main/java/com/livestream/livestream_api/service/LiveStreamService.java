@@ -99,6 +99,19 @@ public class LiveStreamService {
             return ApiResponse.StreamSummary.from(saved);
         } finally { writeLock.unlock(); }
     }
+    @Transactional
+    public ApiResponse.StreamSummary uploadThumbnail(String email, Long streamId, MultipartFile file) {
+        LiveStream stream = findStream(streamId);
+        assertHost(stream, email);
+
+        if (stream.getThumbnailUrl() != null)
+            fileStorageService.deleteFile(stream.getThumbnailUrl());
+
+        stream.setThumbnailUrl(fileStorageService.storeFile(file));
+        return ApiResponse.StreamSummary.from(streamRepository.save(stream));
+    }
+
+
 
     @Transactional
     public ApiResponse.StreamSummary endStream(String email, Long streamId) {
@@ -162,7 +175,7 @@ public class LiveStreamService {
         String name = (guestName != null && !guestName.isBlank()) ? guestName : "Guest";
 
         StreamViewer viewer = StreamViewer.builder()
-                .user(null)          // no user — guest
+                .user(null)
                 .guestName(name)
                 .stream(stream)
                 .status(StreamViewer.ViewerStatus.WATCHING)
@@ -187,7 +200,7 @@ public class LiveStreamService {
         return new ApiResponse.MessageResponse("You have left the stream.");
     }
 
-    // ── Registered user leave ────────────────────────────────────────────────
+
     @Transactional
     public ApiResponse.MessageResponse leaveStream(String email, Long streamId) {
         User user = findUserByEmail(email);

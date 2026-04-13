@@ -53,7 +53,22 @@ public class LiveStreamController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(streamService.createStream(userDetails.getUsername(), req, thumbnail));
     }
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse.StreamSummary> createStreamJson(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody LiveStreamRequest.Create req) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(streamService.createStream(userDetails.getUsername(), req, null));
+    }
 
+
+    @PostMapping(value = "/{id}/thumbnail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse.StreamSummary> uploadThumbnail(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(streamService.uploadThumbnail(userDetails.getUsername(), id, file));
+    }
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse.StreamSummary> updateStream(
             @AuthenticationPrincipal UserDetails userDetails,
