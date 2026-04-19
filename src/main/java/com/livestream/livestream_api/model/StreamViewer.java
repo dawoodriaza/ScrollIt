@@ -18,14 +18,14 @@ public class StreamViewer {
     private Long viewerId;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
 
     private String guestName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stream_id", nullable = false)
     private LiveStream stream;
 

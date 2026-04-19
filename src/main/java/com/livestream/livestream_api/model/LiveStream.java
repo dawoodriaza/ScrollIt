@@ -53,10 +53,11 @@ public class LiveStream {
     @Version
     private Long version;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "host_user_id", nullable = false)
     private User host;
 
+    
     @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<StreamViewer> viewers = new ArrayList<>();

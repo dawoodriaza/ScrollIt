@@ -47,6 +47,7 @@ public class LiveStreamService {
         return summary;
     }
 
+    @Transactional
     public List<ApiResponse.StreamSummary> getMyStreams(String email) {
         User user = findUserByEmail(email);
         return streamRepository.findByHost_UserId(user.getUserId())

@@ -22,11 +22,11 @@ public class Comment {
     @Column(nullable = false, length = 1000)
     private String message;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stream_id", nullable = false)
     private LiveStream stream;
 
