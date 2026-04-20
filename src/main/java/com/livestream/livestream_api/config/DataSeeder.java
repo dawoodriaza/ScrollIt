@@ -39,11 +39,11 @@ public class DataSeeder implements CommandLineRunner {
                 .userStatus(User.UserStatus.ACTIVE).emailVerified(true).coinBalance(500).build();
 
         User Hamza = User.builder().username("Hamza").email("Hamza@livestream.com")
-                .password(passwordEncoder.encode("bob123")).role(User.Role.USER)
+                .password(passwordEncoder.encode("Hamza123")).role(User.Role.USER)
                 .userStatus(User.UserStatus.ACTIVE).emailVerified(true).coinBalance(300).build();
 
         User Shahid = User.builder().username("Shahid").email("Shahid@livestream.com")
-                .password(passwordEncoder.encode("carol123")).role(User.Role.USER)
+                .password(passwordEncoder.encode("Shahid123")).role(User.Role.USER)
                 .userStatus(User.UserStatus.ACTIVE).emailVerified(true).coinBalance(750).build();
 
         userRepository.saveAll(List.of(admin, Dawood, Hamza, Shahid));
