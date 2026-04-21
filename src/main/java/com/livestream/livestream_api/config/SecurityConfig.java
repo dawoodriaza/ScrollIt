@@ -98,6 +98,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/streams/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/streams/*/join/guest").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/streams/*/leave/guest").permitAll()

@@ -31,13 +31,33 @@ public class LiveStreamService {
 
 
     public Page<ApiResponse.StreamSummary> getAllLiveStreams(Pageable pageable) {
+        return streamRepository.findByStatus(LiveStream.StreamStatus.LIVE, pageable)
+                .map(stream -> {
+                    ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
+                    summary.setViewerCount(concurrency.getViewerCount(stream.getStreamId()));
+                    summary.setLikeCount(concurrency.getLikeCount(stream.getStreamId()));
+                    return summary;
+                });
+    }
+
+    public Page<ApiResponse.StreamSummary> getAllStreams(Pageable pageable) {
         return streamRepository.findAll(pageable)
-                .map(ApiResponse.StreamSummary::from);
+                .map(stream -> {
+                    ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
+                    summary.setViewerCount(concurrency.getViewerCount(stream.getStreamId()));
+                    summary.setLikeCount(concurrency.getLikeCount(stream.getStreamId()));
+                    return summary;
+                });
     }
 
     public Page<ApiResponse.StreamSummary> getliveStreams(Pageable pageable) {
         return streamRepository.findByStatus(LiveStream.StreamStatus.LIVE, pageable)
-                .map(ApiResponse.StreamSummary::from);
+                .map(stream -> {
+                    ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
+                    summary.setViewerCount(concurrency.getViewerCount(stream.getStreamId()));
+                    summary.setLikeCount(concurrency.getLikeCount(stream.getStreamId()));
+                    return summary;
+                });
     }
 
     public Page<ApiResponse.StreamSummary> getScheduledStreams(Pageable pageable) {
@@ -45,29 +65,46 @@ public class LiveStreamService {
                 .map(ApiResponse.StreamSummary::from);
     }
 
-
-
-
     public Page<ApiResponse.StreamSummary> getALLEndedStreams(Pageable pageable) {
         return streamRepository.findByStatus(LiveStream.StreamStatus.ENDED, pageable)
                 .map(ApiResponse.StreamSummary::from);
     }
 
-    public Page<ApiResponse.StreamSummary> getAllStreams(Pageable pageable) {
-        return streamRepository.findAll(pageable)
-                .map(ApiResponse.StreamSummary::from);
-    }
-
-
     public Page<ApiResponse.StreamSummary> searchStreams(String keyword, Pageable pageable) {
-        return streamRepository.searchByTitle(keyword, pageable).map(ApiResponse.StreamSummary::from);
+        return streamRepository.searchByTitle(keyword, pageable)
+                .map(stream -> {
+                    ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
+                    summary.setViewerCount(concurrency.getViewerCount(stream.getStreamId()));
+                    summary.setLikeCount(concurrency.getLikeCount(stream.getStreamId()));
+                    return summary;
+                });
     }
+
+
+
+
+
+//    public Page<ApiResponse.StreamSummary> getAllLiveStreams(Pageable pageable) {
+//        return streamRepository.findAll(pageable)
+//                .map(ApiResponse.StreamSummary::from);
+//    }
+
+//    public ApiResponse.StreamSummary getStreamById(Long id) {
+//        LiveStream stream = findStream(id);
+//        ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
+//        summary.setViewerCount(concurrency.getViewerCount(id));
+//        summary.setLikeCount(concurrency.getLikeCount(id));
+//        return summary;
+//    }
+
 
     public ApiResponse.StreamSummary getStreamById(Long id) {
         LiveStream stream = findStream(id);
         ApiResponse.StreamSummary summary = ApiResponse.StreamSummary.from(stream);
-        summary.setViewerCount(concurrency.getViewerCount(id));
-        summary.setLikeCount(concurrency.getLikeCount(id));
+        if (stream.getStatus() == LiveStream.StreamStatus.LIVE) {
+            summary.setViewerCount(concurrency.getViewerCount(id));
+            summary.setLikeCount(concurrency.getLikeCount(id));
+        }
         return summary;
     }
 
