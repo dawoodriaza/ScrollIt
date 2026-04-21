@@ -59,17 +59,41 @@ public class DataSeeder implements CommandLineRunner {
         log.info("Seeded 5 gifts.");
 
         streamRepository.saveAll(List.of(
-                LiveStream.builder().title("Alice's Morning Gaming Session")
-                        .description("Join me for some chill gaming!").host(Dawood)
-                        .status(LiveStream.StreamStatus.LIVE).viewerCount(0).likeCount(0).build(),
-                LiveStream.builder().title("Bob Cooks Live!")
-                        .description("Cooking the best pasta you've ever seen.").host(Hamza)
-                        .status(LiveStream.StreamStatus.SCHEDULED).viewerCount(0).likeCount(0).build()
+                LiveStream.builder().title("Dawood Java Session")
+                        .description("Join me for some coding lessons!").host(Dawood)
+                        .status(LiveStream.StreamStatus.LIVE).viewerCount(1000000).likeCount(52258).build(),
+                LiveStream.builder().title("Dawood Cooks Live!")
+                        .description("Cooking TV.").host(Hamza)
+                        .status(LiveStream.StreamStatus.LIVE).viewerCount(10000).likeCount(25528).build(),
+                LiveStream.builder().title("Dawood Padel Live!")
+                        .description("Game TV.").host(Hamza)
+                        .status(LiveStream.StreamStatus.LIVE).viewerCount(10).likeCount(8).build(),
+                LiveStream.builder().title("BBC Live")
+                        .description("Get latest news.").host(Hamza)
+                        .status(LiveStream.StreamStatus.SCHEDULED).viewerCount(0).likeCount(0).build(),
+                LiveStream.builder().title("Trump Update")
+                        .description("Get latest Trump tweets.").host(Hamza)
+                        .status(LiveStream.StreamStatus.SCHEDULED).viewerCount(0).likeCount(0).build(),
+                LiveStream.builder().title("KSI vs logan Paul")
+                        .description("Bet").host(Hamza)
+                        .status(LiveStream.StreamStatus.SCHEDULED).viewerCount(0).likeCount(0).build(),
+                LiveStream.builder().title("Stock Market News")
+                        .description("MONEYYYYY").host(Hamza)
+                        .status(LiveStream.StreamStatus.SCHEDULED).viewerCount(0).likeCount(0).build(),
+                LiveStream.builder().title("Tylor Swift Live!")
+                        .description("Auto Tune.").host(Hamza)
+                        .status(LiveStream.StreamStatus.LIVE).viewerCount(40000).likeCount(8527).build(),
+                LiveStream.builder().title("Atif Aslam Live!")
+                        .description("AAAAA.").host(Hamza)
+                        .status(LiveStream.StreamStatus.LIVE).viewerCount(2300).likeCount(1478).build(),
+                LiveStream.builder().title("Tom and Jerry")
+                        .description("Cartoon.").host(Hamza)
+                        .status(LiveStream.StreamStatus.ENDED).viewerCount(9000).likeCount(6347).build()
         ));
-        log.info("Seeded 2 streams.");
+        log.info("Seeded 5 streams.");
 
         log.info("Database seeding complete!");
-        log.info("Admin login -> email: admin@livestream.com | password: admin123");
-        log.info("User login  -> email: Dawood@livestream.com | password: Dawood123");
+        log.info("Admin login email: admin@livestream.com , password: admin123");
+        log.info("User login email: Dawood@livestream.com , password: Dawood123");
     }
 }

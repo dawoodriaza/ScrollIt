@@ -31,9 +31,33 @@ public class LiveStreamService {
 
 
     public Page<ApiResponse.StreamSummary> getAllLiveStreams(Pageable pageable) {
+        return streamRepository.findAll(pageable)
+                .map(ApiResponse.StreamSummary::from);
+    }
+
+    public Page<ApiResponse.StreamSummary> getliveStreams(Pageable pageable) {
         return streamRepository.findByStatus(LiveStream.StreamStatus.LIVE, pageable)
                 .map(ApiResponse.StreamSummary::from);
     }
+
+    public Page<ApiResponse.StreamSummary> getScheduledStreams(Pageable pageable) {
+        return streamRepository.findByStatus(LiveStream.StreamStatus.SCHEDULED, pageable)
+                .map(ApiResponse.StreamSummary::from);
+    }
+
+
+
+
+    public Page<ApiResponse.StreamSummary> getALLEndedStreams(Pageable pageable) {
+        return streamRepository.findByStatus(LiveStream.StreamStatus.ENDED, pageable)
+                .map(ApiResponse.StreamSummary::from);
+    }
+
+    public Page<ApiResponse.StreamSummary> getAllStreams(Pageable pageable) {
+        return streamRepository.findAll(pageable)
+                .map(ApiResponse.StreamSummary::from);
+    }
+
 
     public Page<ApiResponse.StreamSummary> searchStreams(String keyword, Pageable pageable) {
         return streamRepository.searchByTitle(keyword, pageable).map(ApiResponse.StreamSummary::from);

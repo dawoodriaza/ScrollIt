@@ -20,11 +20,52 @@ public class LiveStreamController {
 
     private final LiveStreamService streamService;
 
+
+
     @GetMapping
-    public ResponseEntity<Page<ApiResponse.StreamSummary>> getLiveStreams(
+    public ResponseEntity<Page<ApiResponse.StreamSummary>> getAllStreams(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(streamService.getAllLiveStreams(PageRequest.of(page, size, Sort.by("startedAt").descending())));
+        return ResponseEntity.ok(
+                streamService.getAllStreams(
+                        PageRequest.of(page, size, Sort.by("startedAt").descending())
+                )
+        );
+    }
+
+
+
+
+    @GetMapping("/live")
+    public ResponseEntity<Page<ApiResponse.StreamSummary>> getliveStreams(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+                streamService.getliveStreams(
+                        PageRequest.of(page, size, Sort.by("startedAt").descending())
+                )
+        );
+    }
+    @GetMapping("/scheduled")
+    public ResponseEntity<Page<ApiResponse.StreamSummary>> getScheduledStreams(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+                streamService.getScheduledStreams(
+                        PageRequest.of(page, size, Sort.by("endedAt").descending())
+                )
+        );
+    }
+
+    @GetMapping("/ended")
+    public ResponseEntity<Page<ApiResponse.StreamSummary>> getALLEndedStreams(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+                streamService.getALLEndedStreams(
+                        PageRequest.of(page, size, Sort.by("endedAt").descending())
+                )
+        );
     }
 
     @GetMapping("/search")
@@ -34,6 +75,10 @@ public class LiveStreamController {
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(streamService.searchStreams(keyword, PageRequest.of(page, size)));
     }
+
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse.StreamSummary> getStream(@PathVariable Long id) {
