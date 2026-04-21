@@ -2,6 +2,9 @@ package com.livestream.livestream_api.controller;
 
 import com.livestream.livestream_api.dto.request.LiveStreamRequest;
 import com.livestream.livestream_api.dto.response.ApiResponse;
+import com.livestream.livestream_api.exception.UnauthorizedException;
+import com.livestream.livestream_api.model.User;
+import com.livestream.livestream_api.repository.UserRepository;
 import com.livestream.livestream_api.service.LiveStreamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,7 @@ public class LiveStreamController {
 
     private final LiveStreamService streamService;
 
-
+    private final UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<Page<ApiResponse.StreamSummary>> getAllStreams(
@@ -175,4 +178,11 @@ public class LiveStreamController {
     public ResponseEntity<List<ApiResponse.ViewerSummary>> getViewers(@PathVariable Long id) {
         return ResponseEntity.ok(streamService.getStreamViewers(id));
     }
+    private void assertUserRole(UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("User not found"));
+        if (user.getRole() == User.Role.ADMIN)
+            throw new UnauthorizedException("Admins cannot createstreams");
+    }
+
 }
