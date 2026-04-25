@@ -258,7 +258,7 @@ User registers → email sent to Mailtrap → open Mailtrap inbox → copy token
 
 ---
 
-## 🌱 Seeded Data
+## Seeded Data
 
 The database is seeded automatically on first run with:
 
@@ -301,7 +301,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 ---
 
-### 🔓 Auth — No token required
+### Auth — No token required
 
 | Method | Endpoint | Body | Description |
 |---|---|---|---|
@@ -339,7 +339,7 @@ POST /api/auth/register
 
 ---
 
-### 👤 Users — Token required
+###  Users — Token required
 
 | Method | Endpoint | Body | Description |
 |---|---|---|---|
@@ -349,7 +349,7 @@ POST /api/auth/register
 
 ---
 
-### 📡 Streams — Mixed access
+###  Streams — Mixed access
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
