@@ -17,6 +17,7 @@ Users can go live, watch streams, send gifts, comment, and like — all handled 
 
 ## Table of Contents
 
+- [FrontEnd](https://github.com/dawoodriaza/ScrollIt-FrontEnd/tree/main)
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Project Structure](#project-structure)
